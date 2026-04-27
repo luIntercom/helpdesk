@@ -1,164 +1,143 @@
 <!doctype html>                                                                                                                                                                                              
-  <html>                                                                          
+  <html>                                                                                                                                                                                                       
   <head>                                                                                                                                                                                                       
-    <title>Fin for Pepe Jeans</title>
-    <meta charset="UTF-8">                                                                                                                                                                                     
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">        
+    <title>Fin for Pepe Jeans</title>                                                                                                                                                                          
+    <meta charset="UTF-8">                                                        
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jsrsasign"></script>                                                                                                                                             
-  
-    <script>                                                                                                                                                                                                   
-      // -------- BRAND CONFIG --------                                           
-      const BRANDS = {                   
-        pepe: {                                                                                                                                                                                                
+                                                                                                                                                                                                               
+    <script>
+      // -------- BRAND CONFIG --------                                                                                                                                                                        
+      const BRANDS = {                                                            
+        pepe: {                          
           messenger_style_id: 2495492,
-          title: 'Fin for Pepe Jeans',                                                                                                                                                                         
-          label: 'Pepe Jeans London',                                             
+          title: 'Fin for Pepe Jeans',
+          label: 'Pepe Jeans London',                                                                                                                                                                          
           bgGradient: 'from-black via-black/70 to-[#2b0045]/80'
         },                                                                                                                                                                                                     
-        hackett: {
-          messenger_style_id: 2495494,                                                                                                                                                                         
-          title: 'Fin for Hackett London',                                        
-          label: 'Hackett London',       
+        hackett: {                                                                
+          messenger_style_id: 2495494,   
+          title: 'Fin for Hackett London',                                                                                                                                                                     
+          label: 'Hackett London',
           bgGradient: 'from-[#1c2340] via-[#1c2340]/70 to-[#0d1225]/80'                                                                                                                                        
-        }
-      };                                                                                                                                                                                                       
-      let currentBrand = 'pepe';                                                  
-                                         
-      // -------- DEMO HELPERS --------                                                                                                                                                                        
+        }                                                                                                                                                                                                      
+      };                                 
+      let currentBrand = 'pepe';                                                                                                                                                                               
+                                                                                  
+      // -------- DEMO HELPERS --------  
       function randomUserId() {
-        const bytes = new Uint8Array(16);                                                                                                                                                                      
-        crypto.getRandomValues(bytes);                                            
+        const bytes = new Uint8Array(16);
+        crypto.getRandomValues(bytes);                                                                                                                                                                         
         return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
       }                                                                                                                                                                                                        
-  
-      function randomName() {                                                                                                                                                                                  
-        const names = [                                                           
+                                                                                  
+      function randomName() {                                                                                                                                                                                
+        const names = [
           "James", "Tess", "Alex", "Jordan",
-          "Taylor", "Sam", "Avery", "Riley", "Luis"
+          "Taylor", "Sam", "Avery", "Riley", "Luis"                                                                                                                                                            
         ];
-        return names[Math.floor(Math.random() * names.length)];
-      }                                                                                                                                                                                                        
-  
+        return names[Math.floor(Math.random() * names.length)];                                                                                                                                                
+      }                                                                           
+                                                                                                                                                                                                             
       function emailFromNameAndUserId(name, user_id) {                                                                                                                                                         
-        const cleanName = name.trim().toLowerCase().replace(/\s+/g, '');          
-        const shortId = user_id.slice(0, 6);
-        return `${cleanName}${shortId}@sfdcdemo.com`;                                                                                                                                                          
-      }
-                                                                                                                                                                                                               
-      function createJwt({ user_id, email, name }) {                              
-        const secret = "l1MaqUaWo1V7OumDDUyzacJ7AgSUfceuyoYcoagILaY"; // demo-only
-        const header = { alg: "HS256", typ: "JWT" };                                                                                                                                                           
-        const payload = {
-          user_id,                                                                                                                                                                                             
-          email,                                                                  
-          name,                          
-          iss: "demo-client",                                                                                                                                                                                  
-          iat: KJUR.jws.IntDate.get("now"),
-          exp: KJUR.jws.IntDate.get("now + 1hour")                                                                                                                                                             
-        };                                                                        
-        return KJUR.jws.JWS.sign("HS256", JSON.stringify(header), JSON.stringify(payload), secret);
+        const cleanName = name.trim().toLowerCase().replace(/\s+/g, '');
+        const shortId = user_id.slice(0, 6);                                                                                                                                                                   
+        return `${cleanName}${shortId}@sfdcdemo.com`;                             
       }                                                                                                                                                                                                        
-  
+   
       function updateUiIdentity({ user_id, name, email }) {                                                                                                                                                    
         document.getElementById("currentName").textContent = name;                
-        document.getElementById("currentEmail").textContent = email;
-        document.getElementById("currentUserId").textContent = user_id;                                                                                                                                        
-      }
+        document.getElementById("currentEmail").textContent = email;                                                                                                                                         
+        document.getElementById("currentUserId").textContent = user_id;
+      }                                                                                                                                                                                                        
+   
+      function bootIntercom({ user_id, name, email }) {                                                                                                                                                        
+        window.intercomSettings = {                                               
+          api_base: "https://api-iam.intercom.io",                                                                                                                                                           
+          app_id: "j037od9u",                                                                                                                                                                                  
+          user_id: user_id,
+          name: name,                                                                                                                                                                                          
+          email: email,                                                           
+          messenger_style_id: BRANDS[currentBrand].messenger_style_id,                                                                                                                                       
+          brand: BRANDS[currentBrand].label                                                                                                                                                                    
+        };
                                                                                                                                                                                                                
-      function setIntercomSettingsAndBoot({ user_id, name, email }) {             
-        const token = createJwt({ user_id, email, name });
-                                                                                                                                                                                                               
-        window.intercomSettings = {
-          api_base: "https://api-iam.intercom.io",                                                                                                                                                             
-          app_id: "j037od9u",  
-          user_id: "b6af668edb44d0bf12df09d758985b",
-          //intercom_user_jwt: token,      
-          messenger_style_id: BRANDS[currentBrand].messenger_style_id,                                                                                                                                         
-          brand: BRANDS[currentBrand].label
-        };                                                                                                                                                                                                     
-                                                                                  
-        updateUiIdentity({ user_id, name, email });
-
-        if (typeof window.Intercom === "function") {                                                                                                                                                           
+        updateUiIdentity({ user_id, name, email });                               
+                                                                                                                                                                                                             
+        if (typeof window.Intercom === "function") {
           window.Intercom("shutdown");
           setTimeout(function() {                                                                                                                                                                              
-            window.Intercom("boot", window.intercomSettings);                     
-            window.Intercom("hide");     
-          }, 500);
-        } else {
-          (window.Intercom || function(){ (window.Intercom.q = window.Intercom.q || []).push(arguments); })(                                                                                                   
-            "boot",
-            window.intercomSettings                                                                                                                                                                            
-          );                                                                      
-        }                                
+            window.Intercom("boot", window.intercomSettings);
+            window.Intercom("hide");                                                                                                                                                                           
+          }, 500);                                                                
+        } else {                                                                                                                                                                                             
+          (window.Intercom || function(){ (window.Intercom.q = window.Intercom.q || []).push(arguments); })(
+            "boot",                                                                                                                                                                                            
+            window.intercomSettings
+          );                                                                                                                                                                                                   
+        }                                                                         
+      }                                                                                                                                                                                                      
 
-        return token;                                                                                                                                                                                          
+      function newUser() {
+        const name = randomName();
+        const user_id = randomUserId();                                                                                                                                                                        
+        const email = emailFromNameAndUserId(name, user_id);
+        bootIntercom({ user_id, name, email });                                                                                                                                                                
+      }                                                                           
+                                                                                                                                                                                                             
+      function selectDavidUser() {                                                                                                                                                                             
+        bootIntercom({
+          name: "David Spencer",                                                                                                                                                                               
+          email: "luis.herrerapettit@hq.intercom.com",                            
+          user_id: "b6af668edb44d0bf12df09d758985b"                                                                                                                                                          
+        });                                                                                                                                                                                                    
       }
                                                                                                                                                                                                                
-      function generateIdentityAndJwt() {                                         
-        const name = randomName();       
-        const user_id = randomUserId();
-        const email = emailFromNameAndUserId(name, user_id);
-        return setIntercomSettingsAndBoot({ user_id, name, email });
-      }                                                                                                                                                                                                        
-  
-      function newUser() {                                                                                                                                                                                     
-        generateIdentityAndJwt();                                                 
-      }                                  
-
-      function selectDavidUser() {
-        const name = "David Spencer";
-        const email = "luis.herrerapettit@hq.intercom.com";
-        const user_id = "b6af668edb44d0bf12df09d758985b";                                                                                                                                                      
-        return setIntercomSettingsAndBoot({ user_id, name, email });
-      }                                                                                                                                                                                                        
-                                                                                  
-      // -------- BRAND SWITCHING --------                                                                                                                                                                     
-      function switchBrand(brand) {
-        currentBrand = brand;                                                                                                                                                                                  
-        const config = BRANDS[brand];                                             
-                                         
+      // -------- BRAND SWITCHING --------                                        
+      function switchBrand(brand) {                                                                                                                                                                          
+        currentBrand = brand;
+        const config = BRANDS[brand];
+                                                                                                                                                                                                               
         // Update page
-        document.getElementById('pageTitle').textContent = config.title;
-        document.getElementById('overlay').className =
-          `absolute inset-0 bg-gradient-to-b ${config.bgGradient} z-[-1]`;                                                                                                                                     
-  
-        // Update brand button states                                                                                                                                                                          
-        document.querySelectorAll('.brand-btn').forEach(btn => btn.classList.remove('ring-2', 'ring-white'));
-        document.getElementById(`btn-${brand}`).classList.add('ring-2', 'ring-white');                                                                                                                         
-  
-        // Reboot Messenger with new brand style                                                                                                                                                               
-        if (typeof window.Intercom === "function") {                              
-          window.Intercom("shutdown");                                                                                                                                                                         
-          setTimeout(function() {
-            window.intercomSettings.messenger_style_id = config.messenger_style_id;                                                                                                                            
-            window.intercomSettings.brand = config.label;                         
-            window.Intercom("boot", window.intercomSettings);                                                                                                                                                  
-          }, 500);
-        }                                                                                                                                                                                                      
-      }                                                                           
-    </script>                            
+        document.getElementById('pageTitle').textContent = config.title;                                                                                                                                       
+        document.getElementById('overlay').className =                            
+          `absolute inset-0 bg-gradient-to-b ${config.bgGradient} z-[-1]`;                                                                                                                                   
+                                                                                                                                                                                                               
+        // Update brand button states
+        document.querySelectorAll('.brand-btn').forEach(btn => btn.classList.remove('ring-2', 'ring-white'));                                                                                                  
+        document.getElementById(`btn-${brand}`).classList.add('ring-2', 'ring-white');
+                                                                                                                                                                                                               
+        // Reboot Messenger with new brand style
+        if (typeof window.Intercom === "function") {                                                                                                                                                           
+          window.Intercom("shutdown");                                            
+          setTimeout(function() {                                                                                                                                                                            
+            window.intercomSettings.messenger_style_id = config.messenger_style_id;
+            window.intercomSettings.brand = config.label;                                                                                                                                                      
+            window.Intercom("boot", window.intercomSettings);
+          }, 500);                                                                                                                                                                                             
+        }                                                                         
+      }                                                                                                                                                                                                      
+    </script>
   </head>
 
   <body class="relative flex flex-col items-center justify-center min-h-screen overflow-hidden text-center text-white">                                                                                        
-  
+   
     <!-- Background Video -->                                                                                                                                                                                  
     <video autoplay muted loop playsinline                                        
-           class="absolute top-0 left-0 w-full h-full object-cover object-top z-[-2]">
-      <source src="https://videos.ctfassets.net/xny2w179f4ki/4qwcJQYYUbB2aQgIoSKu0B/18bb952c143cc39b5934bb21765cf2b4/Fin2_EnergySource_KW_v034_HybridSharpened_wParticles_WEB_10mb.mp4"
+           class="absolute top-0 left-0 w-full h-full object-cover object-top z-[-2]">                                                                                                                       
+      <source src="https://videos.ctfassets.net/xny2w179f4ki/4qwcJQYYUbB2aQgIoSKu0B/18bb952c143cc39b5934bb21765cf2b4/Fin2_EnergySource_KW_v034_HybridSharpened_wParticles_WEB_10mb.mp4"                        
               type="video/mp4">                                                                                                                                                                                
-      Your browser does not support the video tag.
+      Your browser does not support the video tag.                                                                                                                                                             
     </video>                                                                                                                                                                                                   
-                                                                                  
+                                                                                                                                                                                                             
     <!-- Dark overlay -->                                                                                                                                                                                      
     <div id="overlay" class="absolute inset-0 bg-gradient-to-b from-black via-black/70 to-[#2b0045]/80 z-[-1]"></div>
                                                                                                                                                                                                                
-    <!-- Main Content -->                                                                                                                                                                                      
-    <h1 id="pageTitle" class="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">Fin for Pepe Jeans</h1>
-                                                                                                                                                                                                               
+    <!-- Main Content -->
+    <h1 id="pageTitle" class="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">Fin for Pepe Jeans</h1>                                                                                                      
+                                                                                  
     <!-- Brand Switcher -->                                                                                                                                                                                    
-    <div class="flex gap-3 mb-6">        
+    <div class="flex gap-3 mb-6">
       <button id="btn-pepe"                                                                                                                                                                                    
               class="brand-btn ring-2 ring-white bg-[#e63946] hover:bg-[#c1121f] text-white px-5 py-2 rounded-lg font-semibold uppercase text-sm tracking-wide transition"
               onclick="switchBrand('pepe')">                                                                                                                                                                   
@@ -191,33 +170,33 @@
           Specific User (David)
         </button>                                                                                                                                                                                              
       </div>                                                                      
-    </div>                               
+    </div>                                                                                                                                                                                                   
 
-    <script>                                                                                                                                                                                                   
-      generateIdentityAndJwt();
-    </script>                                                                                                                                                                                                  
-                                                                                  
-    <!-- Intercom widget -->             
     <script>
-      (function () {
-        var w = window; var ic = w.Intercom;
-        if (typeof ic === "function") {
-          ic('boot', w.intercomSettings);                                                                                                                                                                      
+      newUser();
+    </script>
+
+    <!-- Intercom widget -->                                                                                                                                                                                   
+    <script>
+      (function () {                                                                                                                                                                                           
+        var w = window; var ic = w.Intercom;                                      
+        if (typeof ic === "function") {                                                                                                                                                                      
+          ic('boot', w.intercomSettings);
         } else {
-          var d = document; var i = function () { i.c(arguments); }; i.q = [];                                                                                                                                 
-          i.c = function (args) { i.q.push(args); }; w.Intercom = i;              
-          var l = function () {                                                                                                                                                                                
-            var s = d.createElement('script'); s.type = 'text/javascript'; s.async = true;
+          var d = document; var i = function () { i.c(arguments); }; i.q = [];
+          i.c = function (args) { i.q.push(args); }; w.Intercom = i;                                                                                                                                           
+          var l = function () {
+            var s = d.createElement('script'); s.type = 'text/javascript'; s.async = true;                                                                                                                     
             s.src = 'https://widget.intercom.io/widget/j037od9u';                                                                                                                                              
-            var x = d.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);                                                                                                                      
-          };                             
-          w.Intercom('boot', w.intercomSettings);                                                                                                                                                              
+            var x = d.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);                                                                                                                    
+          };                                                                                                                                                                                                   
+          w.Intercom('boot', w.intercomSettings);                                 
                                                                                                                                                                                                                
-          if (d.readyState === 'complete') { l(); }
-          else if (w.attachEvent) { w.attachEvent('onload', l); }                                                                                                                                              
-          else { w.addEventListener('load', l, false); }                          
-        }                                                                                                                                                                                                      
-      })();
-    </script>                                                                                                                                                                                                  
-  </body>                                                                         
-  </html>  
+          if (d.readyState === 'complete') { l(); }                               
+          else if (w.attachEvent) { w.attachEvent('onload', l); }
+          else { w.addEventListener('load', l, false); }                                                                                                                                                       
+        }
+      })();                                                                                                                                                                                                    
+    </script>                                                                     
+  </body>                                
+  </html>
