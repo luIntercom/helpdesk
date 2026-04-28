@@ -11,14 +11,12 @@
       pepe: {
         messenger_style_id: 2495492,
         title: 'Fin for Pepe Jeans',
-        label: 'Pepe Jeans London',
-        bgGradient: 'from-black via-black/70 to-[#2b0045]/80'
+        label: 'Pepe Jeans London'
       },
       hackett: {
         messenger_style_id: 2495494,
         title: 'Fin for Hackett',
-        label: 'Hackett London',
-        bgGradient: 'from-[#1c2340] via-[#1c2340]/70 to-[#0d1225]/80'
+        label: 'Hackett London'
       }
     };
 
@@ -91,10 +89,24 @@
 
       document.getElementById('pageTitle').textContent = config.title;
 
-      // ❌ This line was causing the background to change
-      // document.getElementById('overlay').className =
-      //   `absolute inset-0 bg-gradient-to-b ${config.bgGradient} z-[-1]`;
+      const pepeBtn = document.getElementById('btn-pepe');
+      const hackettBtn = document.getElementById('btn-hackett');
 
+      // Reset both buttons
+      [pepeBtn, hackettBtn].forEach(btn => {
+        btn.classList.remove('bg-[#e63946]', 'hover:bg-[#c1121f]', 'bg-[#1c2340]', 'hover:bg-[#0d1225]');
+      });
+
+      // Apply active/inactive styles
+      if (brand === 'pepe') {
+        pepeBtn.classList.add('bg-[#e63946]', 'hover:bg-[#c1121f]');
+        hackettBtn.classList.add('bg-[#1c2340]', 'hover:bg-[#0d1225]');
+      } else {
+        hackettBtn.classList.add('bg-[#e63946]', 'hover:bg-[#c1121f]');
+        pepeBtn.classList.add('bg-[#1c2340]', 'hover:bg-[#0d1225]');
+      }
+
+      // Optional ring highlight
       document.querySelectorAll('.brand-btn').forEach(btn =>
         btn.classList.remove('ring-2','ring-white')
       );
